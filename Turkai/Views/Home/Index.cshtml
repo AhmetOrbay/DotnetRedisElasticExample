@@ -1,0 +1,44 @@
+﻿@using Turkai.Model.ExtensionModel.ElasticSearch;
+@model List<ElasticImportModel>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<h1>Data List</h1>
+@if(Model is null || !Model.Any()){
+    <div>Not found Product</div>
+}else{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var data in Model)
+            {
+                <tr>
+                    <td>@data.Id</td>
+                    <td>@data.Title</td>
+                    <td>
+                        <a class="btn btn-primary" id="detailButton" onclick="GetDetail(@data.Id)" data-id="@data.Id">Detail</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+<script>
+
+    function GetDetail(Id){
+                console.log("sela")
+        window.location.href = "Home/Detail/" + Id;
+
+    }
+</script>

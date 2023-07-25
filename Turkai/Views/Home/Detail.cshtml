@@ -1,0 +1,51 @@
+﻿@using Turkai.Model.Dtos;
+@model ProductDto
+
+<h2>Products</h2>
+
+<button onclick="GotoBack()">Go to Index</button>
+@if(Model is null)
+{
+    <div> Not Found Product</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Discount Percentage</th>
+                <th>Rating</th>
+                <th>Stock</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Thumbnail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @Model
+                <td>@Model.Id</td>
+                <td>@Model.Title</td>
+                <td>@Model.Description</td>
+                <td>@Model.Price</td>
+                <td>@Model.DiscountPercentage</td>
+                <td>@Model.Rating</td>
+                <td>@Model.Stock</td>
+                <td>@Model.Brand</td>
+                <td>@Model.Category</td>
+                <td><img src="@Model.Thumbnail.AbsoluteUri" alt="Thumbnail" width="100" height="100" /></td>
+            </tr>
+        </tbody>
+    </table>
+}
+<script>
+
+    function GotoBack() {
+
+        window.location.href = "/";
+    }
+</script>
