@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Nest;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using Turkai.Model.Dtos;
 using Turkai.Model.ExtensionModel.ElasticSearch;
 using Turkai.Models;
@@ -25,7 +27,7 @@ namespace Turkai.Controllers
         {
             try
             {
-                var data = await _elasicSearchService.GetElasticSearchData<ElasticImportModel>(ElasticSearchIndex.productlist);
+                var data = await _elasicSearchService.GetElasticSearchData(ElasticSearchIndex.productlist);
                 return View(data);
             }
             catch (Exception ex)
@@ -46,9 +48,35 @@ namespace Turkai.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"List  {ex.Message}");
                 return BadRequest($"List  {ex.Message}");
             }
+        }
+
+
+        public async Task<IActionResult> BasketCheck(List<BasketDetail> basketDetail)
+        {
+            var resultFalse = new CheckStockModel() { CheckStock = true, Title = string.Empty };
+
+            try
+            {
+                foreach (var item in basketDetail)
+                {
+                    var data = await _redisService.GetDataRedis(item.Id);
+                    if (data.Stock < item.Count) resultFalse = new CheckStockModel() { CheckStock = false, Title = item.Title };
+                }
+                return Json(resultFalse);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"List  {ex.Message}");
+                return Json(resultFalse);
+            }
+        }
+
+
+        public async Task<IActionResult> BasketDetail()
+        {
+            return View();
         }
     }
 }

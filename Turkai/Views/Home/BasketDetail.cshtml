@@ -1,0 +1,117 @@
+﻿<div id="errorPopup" style="display: none;">
+    <p id="errorText"></p>
+</div>
+
+
+<table id="basketlist">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<button onclick="CheckCount()" id="payment">Payment</button>
+
+<div id="SuccessPopup" style="display: none;">
+    <p id="SuccessText" style="font-size: xx-large;color: green;"></p>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var parsedData = JSON.parse(localStorage.getItem("Basket"));
+        console.log(parsedData);
+        if (parsedData != null){
+            var sepetTablosu = document.getElementById("basketlist");
+            var table = sepetTablosu.querySelector("tbody");
+
+            if (parsedData) {
+                parsedData.forEach(function (item) {
+                    var row = table.insertRow();
+                    var col1 = row.insertCell(0);
+                    var col3 = row.insertCell(1);
+
+                    col1.textContent = item.Title;
+                    col3.textContent = item.Count + " adet";
+                });
+            } else {
+                var row = table.insertRow();
+                var col = row.insertCell(0);
+                col.colSpan = 3;
+                col.textContent = "Sepetiniz boş.";
+            }
+        }
+        else $("#payment").hide();
+        
+    });
+
+</script>
+
+ <script>
+    function CheckCount(){
+        var parsedData = JSON.parse(localStorage.getItem("Basket"));
+        $.ajax({
+            url: "/Home/BasketCheck",
+            type: "POST",
+            data: {
+                basketDetail: parsedData
+            },
+            success: function (result) {
+                
+                if (result.checkStock == false) {
+                    $("#errorText").text(titles + " stock quantity is not enough");
+                    $("#errorPopup").show();
+                } 
+                else {
+                    localStorage.removeItem("Basket")
+
+                    $("#SuccessText").text("Success");
+                    $("#SuccessPopup").show();
+                    setTimeout(function () {
+
+                        window.location.href = "/";
+                    }, 5000);
+                }
+               
+                console.log("Sonuç: " + result);
+            },
+            error: function (xhr, status, error) {
+                $("#errorText").text(result);
+                $("#errorPopup").show();
+                console.error("Hata: " + error);
+            }
+        });
+    }
+
+
+
+    function AddedLocalStorage(data, Id) {
+        var LocalData = JSON.parse(localStorage.getItem("Basket"));
+        if (LocalData) {
+
+            console.log(LocalData)
+            var existingItemIndex = LocalData.findIndex(function (item) {
+                return item.Id === Id;
+            });
+
+            if (existingItemIndex !== -1) {
+
+                LocalData[existingItemIndex].Count += data.Count;
+            } else {
+
+                LocalData.push(data);
+            }
+        } else {
+
+            LocalData = [data];
+        }
+        localStorage.setItem("Basket", JSON.stringify(LocalData));
+
+    }
+</script>

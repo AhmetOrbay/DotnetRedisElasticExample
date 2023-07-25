@@ -31,25 +31,16 @@ namespace Turkai.Service.Services
         /// </summary>
         /// <param name="Index"></param>
         /// <returns></returns>
-        public async Task<List<T>> GetElasticSearchData<T>(ElasticSearchIndex Index)
+        public async Task<List<ElasticImportModel>> GetElasticSearchData(ElasticSearchIndex Index)
         {
-            var response = await _elasticClient.SearchAsync<dynamic>(s => s
+            var response = await _elasticClient.SearchAsync<ElasticImportModel>(s => s
             .Index(Index.ToString()));
 
-            if (response.IsValid)
-            {
-                var documents = new List<T>();
-                foreach (var hit in response.Hits)
-                {
-                    var document = hit.Source;
-                    documents.Add((T)document);
-                }
-                return documents;
-            }
+            if (response.IsValid) return response.Documents.ToList();
             else
             {
                 _logger.LogError("not Found Products");
-                return new List<T>();
+                return new List<ElasticImportModel>();
             }
         }
 

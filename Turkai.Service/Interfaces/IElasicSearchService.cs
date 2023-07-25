@@ -12,6 +12,6 @@ namespace Turkai.Service.Interfaces
     public interface IElasicSearchService
     {
         Task ImportElasticProduct(List<ElasticImportModel> data);
-        Task<List<T>> GetElasticSearchData<T>(ElasticSearchIndex Index);
+        Task<List<ElasticImportModel>> GetElasticSearchData(ElasticSearchIndex Index);
     }
 }
