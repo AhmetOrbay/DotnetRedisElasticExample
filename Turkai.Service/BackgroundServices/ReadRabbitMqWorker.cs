@@ -26,7 +26,6 @@ namespace Turkai.Service.BackgroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogError("fasfasas");
                 try
                 {
                     await _rabbitMQService.ReadRabbiMQ(Model.ExtensionModel.Enums.RabbitMQEnum.DummpyKey);
