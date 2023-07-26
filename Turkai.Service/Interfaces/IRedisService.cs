@@ -11,6 +11,5 @@ namespace Turkai.Service.Interfaces
     public interface IRedisService
     {
         Task<ProductDto> GetDataRedis(long Id);
-        Task<bool> ImportProduct(long productId);
     }
 }

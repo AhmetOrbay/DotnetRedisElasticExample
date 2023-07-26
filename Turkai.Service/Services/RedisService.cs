@@ -50,7 +50,7 @@ namespace Turkai.Service.Services
                         return result;
                 }
                 var data = await _productService.GetById(Id);
-                await ImportProduct(data.Id);
+                await ImportProductRedis(data.Id);
                 return data ?? new ProductDto();
             }
             catch (Exception ex)
@@ -65,7 +65,7 @@ namespace Turkai.Service.Services
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
-        public async Task<bool> ImportProduct(long productId)
+        private async Task<bool> ImportProductRedis(long productId)
         {
             try
             {
@@ -73,7 +73,13 @@ namespace Turkai.Service.Services
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(_mapper.Map<ProductDto>(Model));
                 var database = _redisDb.GetDatabase();
                 var result = await database.StringSetAsync($"product-{Model.Id}", json);
+                if(!result)
+                {
+                    _logger.LogError("redis could not be imported");
+                    return false;
+                }    
                 return result;
+                
             }
             catch (Exception ex)
             {
