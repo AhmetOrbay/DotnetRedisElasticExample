@@ -2,8 +2,17 @@
 @model ProductDto
 
 <h2>Products</h2>
+<div class="row w-50">
 
-<button onclick="GotoBack()">Go to Index</button>
+    <button class="w-50" onclick="GotoBack()">Go to Index</button>
+    <div class="p-0">Please write how many items you want</div>
+    <div class="col w-100">
+        <input class="w-25" type="text" id="basketSize-@Model.Id" value="1">
+        <button onclick="AddedSepet(@Model.Id,'@Model.Title')">Add Basket</button>
+    </div>
+    
+
+</div>
 @if(Model is null)
 {
     <div> Not Found Product</div>
@@ -23,11 +32,11 @@ else
                 <th>Brand</th>
                 <th>Category</th>
                 <th>Thumbnail</th>
+                <th>Image</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                @Model
                 <td>@Model.Id</td>
                 <td>@Model.Title</td>
                 <td>@Model.Description</td>
@@ -37,7 +46,9 @@ else
                 <td>@Model.Stock</td>
                 <td>@Model.Brand</td>
                 <td>@Model.Category</td>
+
                 <td><img src="@Model.Thumbnail.AbsoluteUri" alt="Thumbnail" width="100" height="100" /></td>
+                <td><img src="@Model.Images[0].AbsoluteUri" alt="Thumbnail" width="100" height="100" /></td>
             </tr>
         </tbody>
     </table>
@@ -47,5 +58,64 @@ else
     function GotoBack() {
 
         window.location.href = "/";
+    }
+
+
+    function AddedSepet(Id, Title) {
+        var count = document.getElementById("basketSize-" + Id).value
+        $("#errorText").text("");
+        $("#errorPopup").hide();
+        $.ajax({
+            url: "/Home/BasketCheck",
+            type: "POST",
+            data: {
+                basketDetail: [{
+                    Id: Id,
+                    Title: Title,
+                    Count: count
+                }]
+            },
+            success: function (result) {
+                console.log(result.checkStock)
+                if (result.checkStock == false) {
+                    $("#errorText").text(result.title + " stock quantity is not enough");
+                    $("#errorPopup").show();
+                } else {
+                    AddedLocalStorage({
+                        Id: Id,
+                        Title: Title,
+                        Count: parseInt(count)
+                    }, Id)
+                }
+            },
+            error: function (xhr, status, error) {
+
+                console.error("Hata: " + error);
+            }
+        });
+    }
+
+
+    function AddedLocalStorage(data, Id) {
+        var LocalData = JSON.parse(localStorage.getItem("Basket"));
+        if (LocalData) {
+            console.log(LocalData)
+            var existingItemIndex = LocalData.findIndex(function (item) {
+                return item.Id === Id;
+            });
+
+            if (existingItemIndex !== -1) {
+
+                LocalData[existingItemIndex].Count += data.Count;
+            } else {
+
+                LocalData.push(data);
+            }
+        } else {
+
+            LocalData = [data];
+        }
+        localStorage.setItem("Basket", JSON.stringify(LocalData));
+
     }
 </script>

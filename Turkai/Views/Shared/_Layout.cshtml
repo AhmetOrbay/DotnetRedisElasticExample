@@ -26,7 +26,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" id="sepetLink" onclick="BasketDetail()">Sepet </a>
+                            <a class="nav-link text-dark" id="BasketDetail" onclick="BasketDetail()">Basket </a>
                         </li>
                     </ul>
                 </div>
@@ -54,20 +54,24 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var sepetLink = document.getElementById("sepetLink");
-
-        var parsedData = JSON.parse(localStorage.getItem("Basket"));
-
-        var totalCount = parsedData ? parsedData.length : 0;
-
-        // Sepet linkine "Count" değerini ekliyoruz.
-        sepetLink.textContent = "Sepet (" + totalCount + ")";
+        updateBasketCount();
     });
+
+    document.addEventListener("click", function (event) {
+        setTimeout(function () {
+
+            updateBasketCount();
+        }, 500);
+    });
+    function updateBasketCount() {
+        var BasketDetailButton = document.getElementById("BasketDetail");
+        var parsedData = JSON.parse(localStorage.getItem("Basket"));
+        var totalCount = parsedData ? parsedData.length : 0;
+        BasketDetailButton.textContent = totalCount > 0 ? "Basket  (" + totalCount + ")" : "Basket";
+    }
 
 
     function BasketDetail(){
-        
-
         window.location.href = "Home/BasketDetail";
     }
     </script>
