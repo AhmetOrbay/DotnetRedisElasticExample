@@ -3,6 +3,9 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="~/js/AddedSepet.js"></script>
+    <script src="~/js/AddedLocalStorage.js"></script>
+
 </head>
 
 <h1>Data List</h1>
@@ -47,68 +50,7 @@
 
 <script>
 
-    function GetDetail(Id){
-                console.log("sela")
-        window.location.href = "Home/Detail/" + Id;
-
-    }
-
-    function AddedSepet(Id, Title) {
-       var count = document.getElementById("basketSize-"+Id).value
-        $("#errorText").text("");
-        $("#errorPopup").hide();
-        $.ajax({
-            url: "/Home/BasketCheck",
-            type: "POST",
-            data: {
-                basketDetail: [{
-                    Id: Id,
-                    Title : Title,
-                    Count: count
-                }]
-            },
-            success: function (result) {
-                console.log(result.checkStock)
-                if (result.checkStock == false) {
-                    $("#errorText").text(result.title + " stock quantity is not enough");
-                    $("#errorPopup").show();
-                } else {
-                    AddedLocalStorage({
-                        Id: Id,
-                        Title: Title,
-                        Count: parseInt(count)
-                    }, Id)
-                    console.log("Sonuç: " + result);
-                }
-            },
-            error: function (xhr, status, error) {
-
-                console.error("Hata: " + error);
-            }
-        });
-    }
-
-
-    function AddedLocalStorage(data,Id){
-        var LocalData = JSON.parse(localStorage.getItem("Basket"));
-        if (LocalData) {
-            console.log(LocalData)
-            var existingItemIndex = LocalData.findIndex(function (item) {
-                return item.Id === Id;
-            });
-
-            if (existingItemIndex !== -1) {
-
-                LocalData[existingItemIndex].Count += data.Count;
-            } else {
-
-                LocalData.push(data);
-            }
-        } else {
-
-            LocalData = [data];
-        }
-        localStorage.setItem("Basket", JSON.stringify(LocalData));
+    function GetDetail(Id){e/Detail/" + Id;
 
     }
 </script>
