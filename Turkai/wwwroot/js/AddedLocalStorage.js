@@ -1,7 +1,6 @@
 ﻿function AddedLocalStorage(data, Id) {
     var LocalData = JSON.parse(localStorage.getItem("Basket"));
     if (LocalData) {
-        console.log(LocalData)
         var existingItemIndex = LocalData.findIndex(function (item) {
             return item.Id === Id;
         });

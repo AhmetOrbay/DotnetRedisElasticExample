@@ -21,8 +21,6 @@ function AddedSepet(Id, Title) {
                     Id: Id,
                     Title: Title,
                     Count: parseInt(count)
-                }, Id)
-                console.log("Sonuç: " + result);
             }
         },
         error: function (xhr, status, error) {
